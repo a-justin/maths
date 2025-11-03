@@ -12,7 +12,7 @@ const sum = require('./sum');
 
 describe('sum', () => {
     test('adds two positive integers', () => {
-        expect(sum(1, 2)).toBe(4);
+        expect(sum(1, 2)).toBe(3);
     });
 
     test('adds negative numbers', () => {
