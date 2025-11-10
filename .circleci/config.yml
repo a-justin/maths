@@ -46,13 +46,13 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            docker build -t austin2375/maths-circle:latest .
+            docker build -t austin2375/maths:latest .
 
       - run:
           name: Push Docker image to Docker Hub
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "" --password-stdin
-            docker push austin2375/maths-circle:latest/maths-circle:latest
+            docker push austin2375/maths:latest/maths:latest
 
 
 workflows:
