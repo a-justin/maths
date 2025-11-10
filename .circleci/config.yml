@@ -18,15 +18,12 @@ jobs:
           name: Install Dependencies
           command: npm ci      
       - run:
-          name: fix jest permissions
-          command: chmod +x ./node_modules/.bin/jest
-      - run:
           name: Test
           command: npm test
       - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
-          key: dependency-cache-{{ checksum "package-lock.json" }}
 
       - store_artifacts:
           path: test-results.xml
