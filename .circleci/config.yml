@@ -46,7 +46,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            docker build -t austin2375/maths-circle:latest
+            docker build -t austin2375/maths-circle:latest .
 
       - run:
           name: Push Docker image to Docker Hub
