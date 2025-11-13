@@ -50,7 +50,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            docker build -t ${DOCKERHUB_USER,,}/maths:latest .
+            docker build -t $DOCKERHUB_USER/maths:latest .
 
       - run:
           name: Push Docker image to Docker Hub
@@ -59,7 +59,7 @@ jobs:
             echo "Docker pass length: ${#DOCKERHUB_PASS}"
 
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-            docker push ${DOCKERHUB_USER,,}/maths:latest
+            docker push $DOCKERHUB_USER/maths:latest
 
 workflows:
   version: 2
