@@ -2,32 +2,36 @@ version: 2.1
 
 jobs:
   build:
-    working_directory: ~/public
     docker:
       - image: cimg/node:24.11.0
+    working_directory: ~/public
+
     steps:
       - checkout
+
       - run:
           name: Update npm
           command: npm install -g npm@latest
 
       - restore_cache:
-          keys:
-            - dependency-cache-{{ checksum "package-lock.json" }}
-      - run: 
-          name: Install Dependencies
-          command: npm ci      
+          key: dependency-cache-{{ checksum "package.json" }}
+
       - run:
-          name: Test
+          name: Install dependencies
+          command: npm ci
+
+      - run:
+          name: Run tests
           command: npm test
+
       - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ checksum "package.json" }}
           paths:
-            - node_modules
+            - ./node_modules
 
       - store_artifacts:
           path: test-results.xml
-          destination: test
+          destination: tests
 
       - store_artifacts:
           path: coverage
@@ -36,7 +40,8 @@ jobs:
       - store_test_results:
           path: test-results.xml
 
- # 🐳 Deploy job using machine executor (so Docker works)
+
+  # 🐳 Deploy job using machine executor (so Docker works)
   deploy:
     machine:
       image: ubuntu-2204:current   # ✅ gives full VM with Docker pre-installed
@@ -51,6 +56,9 @@ jobs:
       - run:
           name: Push Docker image to Docker Hub
           command: |
+               echo "Docker username: $DOCKERHUB_USER"
+          echo "Docker pass length: ${#DOCKERHUB_PASS}"
+            
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
             docker push austin2375/maths:latest
 
@@ -63,10 +71,6 @@ workflows:
       - deploy:
           requires:
             - build
-          context: dockerhub-creds
           filters:
             branches:
               only: main
-
-
-          
