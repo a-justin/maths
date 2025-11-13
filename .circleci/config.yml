@@ -40,26 +40,32 @@ jobs:
       - store_test_results:
           path: test-results.xml
 
-  # 🐳 Deploy job using machine executor (so Docker works)
+  # 🐳 Deploy job using machine executor (Docker)
   deploy:
     machine:
-      image: ubuntu-2204:current
+      image: ubuntu-2204:current   # full VM with Docker pre-installed
     steps:
       - checkout
 
+      # Debug: Check that environment variables are set
+      - run:
+          name: Debug DockerHub credentials
+          command: |
+            echo "DOCKERHUB_USER length: ${#DOCKERHUB_USER}"
+            echo "DOCKERHUB_PASS length: ${#DOCKERHUB_PASS}"
+
+      # Build Docker image with lowercase tag
       - run:
           name: Build Docker image
           command: |
-            docker build -t $DOCKERHUB_USER/maths:latest .
+            docker build -t ${DOCKERHUB_USER,,}/maths:latest .
 
+      # Login to Docker Hub and push
       - run:
-          name: Push Docker image to Docker Hub
+          name: Push Docker image
           command: |
-            echo "Docker username: $DOCKERHUB_USER"
-            echo "Docker pass length: ${#DOCKERHUB_PASS}"
-
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-            docker push $DOCKERHUB_USER/maths:latest
+            docker push ${DOCKERHUB_USER,,}/maths:latest
 
 workflows:
   version: 2
