@@ -1,0 +1,36 @@
+pipeline{
+    
+    agent any
+
+    stages {
+	
+	stage("build"){
+
+	    steps{
+		echo 'Building the application ....'
+	    }
+
+	stage("test"){
+
+	    steps{
+		echo 'Testing the application ...'
+		e.g
+		sh 'npm install'
+		sh 'npm build'
+	    }	
+	}
+
+	stage("deploy"){
+
+	    steps{
+		echo 'deploying the application... '
+
+		script{
+		   def test = 2+2 > 3? 'Cool' : ''Not Cool'
+		   echo test
+		
+		}
+	    }
+
+    }	
+}
